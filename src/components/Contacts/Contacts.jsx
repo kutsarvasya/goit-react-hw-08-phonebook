@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useMemo } from 'react';
 import { getContactsThunk } from 'store/contacts/getContactsThunk';
 import { deleteContactsThunk } from 'store/contacts/deleteContact';
+import { setToken } from 'fetchContacts/usersApi';
 
 export function Contacts() {
   const { items, isLoading, error } = useSelector(
@@ -12,13 +13,14 @@ export function Contacts() {
   );
 
   const filter = useSelector(state => state.contacts.filter);
-  const { user } = useSelector(state => state.auth);
+  const { token } = useSelector(state => state.auth);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!user) return;
+    if (!token) return;
+    setToken(token);
     dispatch(getContactsThunk());
-  }, [dispatch, user]);
+  }, [dispatch, token]);
 
   const filteredContacts = useMemo(() => {
     if (!filter) return items;
@@ -30,7 +32,7 @@ export function Contacts() {
 
   return (
     <>
-      {user && (
+      {token && (
         <>
           <List>
             {filteredContacts.map(contact => (
