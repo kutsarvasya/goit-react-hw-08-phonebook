@@ -13,7 +13,6 @@ export function Contacts() {
 
   const filter = useSelector(state => state.contacts.filter);
   const { user } = useSelector(state => state.auth);
-  console.log(user);
   const dispatch = useDispatch();
 
   useEffect(() => {
