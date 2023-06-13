@@ -1,17 +1,18 @@
-import { Contacts } from 'components/Contacts/Contacts';
-import { Filter } from 'components/Filter/Filter';
-import { Form } from 'components/Form/Form';
+import Layout from 'components/Layout/Layout';
 
-import { Div } from './App.styled';
+import { HomePage } from 'pages/HomePage/HomePage';
+import { Route, Routes } from 'react-router-dom';
+import Login from 'pages/Login/Login';
+import SignUp from 'pages/SignUp/SignUp';
 
 export function App() {
   return (
-    <Div>
-      <h1>Phonebook</h1>
-      <Form />
-      <h2>Contacts</h2>
-      <Filter />
-      <Contacts />
-    </Div>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+        <Route path="login" element={<Login />} />
+        <Route path="signUp" element={<SignUp />} />
+      </Route>
+    </Routes>
   );
 }

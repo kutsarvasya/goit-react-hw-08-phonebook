@@ -12,11 +12,14 @@ export function Contacts() {
   );
 
   const filter = useSelector(state => state.contacts.filter);
+  const { user } = useSelector(state => state.auth);
+  console.log(user);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (!user) return;
     dispatch(getContactsThunk());
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   const filteredContacts = useMemo(() => {
     if (!filter) return items;
@@ -28,20 +31,26 @@ export function Contacts() {
 
   return (
     <>
-      <List>
-        {filteredContacts.map(contact => (
-          <Item key={contact.id}>
-            <p>
-              {contact.name}: {contact.number}
-            </p>
-            <button onClick={() => dispatch(deleteContactsThunk(contact.id))}>
-              Удалить
-            </button>
-          </Item>
-        ))}
-      </List>
-      {isLoading && <h1>LOADING...</h1>}
-      {error && <h1>ERROR...</h1>}
+      {user && (
+        <>
+          <List>
+            {filteredContacts.map(contact => (
+              <Item key={contact.id}>
+                <p>
+                  {contact.name}: {contact.number}
+                </p>
+                <button
+                  onClick={() => dispatch(deleteContactsThunk(contact.id))}
+                >
+                  Удалить
+                </button>
+              </Item>
+            ))}
+          </List>
+          {isLoading && <h1>LOADING...</h1>}
+          {error && <h1>ERROR...</h1>}
+        </>
+      )}
     </>
   );
 }

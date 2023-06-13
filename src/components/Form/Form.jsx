@@ -1,24 +1,44 @@
-import React, { useState } from 'react';
-import { BtnSubmit, FormContacts, LabelForm } from './Form.styled';
+// import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addContactsThunk } from 'store/contacts/addContact';
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { MuiTelInput } from 'mui-tel-input';
+import {
+  NotificationContainer,
+  NotificationManager,
+} from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
+const defaultTheme = createTheme();
 
 export function Form() {
   const dispatch = useDispatch();
   const { items } = useSelector(state => state.contacts.contacts);
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
-
+  const [name, setName] = React.useState('');
+  const [number, setNumber] = React.useState('');
+  const { user } = useSelector(state => state.auth);
   const handleChangeName = e => {
     setName(e.target.value);
   };
-
   const handleChangeNumber = e => {
-    setNumber(e.target.value);
+    setNumber(e);
   };
 
   const handleSubmit = e => {
     e.preventDefault();
+    if (!user) {
+      NotificationManager.success('PLEASE LOG IN');
+
+      return;
+    }
+    if (name.length < 4 || number.length < 4) return;
     const data = {
       name: name,
       number: number,
@@ -27,40 +47,67 @@ export function Form() {
     items.some(
       contact => contact.name.toLowerCase() === data.name.toLowerCase()
     )
-      ? alert(data.name + 'is already in contacts')
+      ? NotificationManager.success(data.name + 'is already in contacts')
       : dispatch(addContactsThunk(data));
     setName('');
     setNumber('');
   };
 
   return (
-    <FormContacts onSubmit={handleSubmit}>
-      <LabelForm>
-        Name
-        <input
-          onChange={handleChangeName}
-          value={name}
-          type="text"
-          name="name"
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          required
-        />
-      </LabelForm>
-
-      <LabelForm>
-        Number
-        <input
-          onChange={handleChangeNumber}
-          value={number}
-          type="tel"
-          name="number"
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-          required
-        />
-      </LabelForm>
-      <BtnSubmit type="submit">add contacts</BtnSubmit>
-    </FormContacts>
+    <ThemeProvider theme={defaultTheme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Typography component="h1" variant="h5">
+            Phonebook
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="name"
+                  label="Name"
+                  type="text"
+                  id="name"
+                  autoComplete="new-text"
+                  onChange={handleChangeName}
+                  value={name}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <MuiTelInput
+                  required
+                  fullWidth
+                  id="phone"
+                  label="Phone"
+                  name="phone"
+                  autoComplete="new-phone"
+                  value={number}
+                  onChange={handleChangeNumber}
+                />
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              SAVE
+            </Button>
+          </Box>
+        </Box>
+      </Container>
+      <NotificationContainer />
+    </ThemeProvider>
   );
 }
