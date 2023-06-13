@@ -8,7 +8,7 @@ const handleFulfilled = (state, { payload }) => {
   state.isLoading = false;
   state.error = '';
   state.token = payload.token;
-  state.user = '';
+  state.user = payload.user;
 };
 const handleRejected = (state, { payload }) => {
   state.isLoading = false;
