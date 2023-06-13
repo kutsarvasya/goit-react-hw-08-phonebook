@@ -36,7 +36,6 @@ export default function SignUp() {
       password: data.get('password'),
     };
     dispatch(signUpThunk(user));
-    navigate('/');
   };
 
   return (
