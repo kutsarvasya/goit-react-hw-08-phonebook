@@ -23,7 +23,7 @@ export function Form() {
   const { items } = useSelector(state => state.contacts.contacts);
   const [name, setName] = React.useState('');
   const [number, setNumber] = React.useState('');
-  const { user } = useSelector(state => state.auth);
+  const { token } = useSelector(state => state.auth);
   const handleChangeName = e => {
     setName(e.target.value);
   };
@@ -33,7 +33,7 @@ export function Form() {
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (!user) {
+    if (!token) {
       NotificationManager.success('PLEASE LOG IN');
 
       return;
