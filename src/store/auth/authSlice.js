@@ -10,9 +10,9 @@ const handleFulfilled = (state, { payload }) => {
   state.token = payload.token;
   state.user = payload.user;
 };
-const handleRejected = (state, { payload }) => {
+const handleRejected = (state, { error }) => {
   state.isLoading = false;
-  state.error = 'enter correct data';
+  state.error = error.message;
 };
 
 const authSlice = createSlice({
